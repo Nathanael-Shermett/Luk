@@ -263,7 +263,7 @@ class Luk
 				if (current($array)['luckiness'] < $element['luckiness'])
 				{
 					// The next element is less lucky, so let's decrement the LUK for that iteration.
-					$luk_running -= ($luk / 10);
+					$luk_running -= ($luk / ((count($array) > 10) ? count($array) : 10));
 				}
 			}
 		}
@@ -320,36 +320,12 @@ class Luk
 	}
 
 	/**
-	 * Custom implementation of PHP's shuffle() function. Behaves the same way, but keys are not reset.
-	 *
-	 * @access private
-	 * @param array $array Associaive array to be shuffled.
-	 * @return TRUE
-	 */
-	private static function shuffle_assoc(&$array)
-	{
-		// The array's keys (as an array).
-		$keys = array_keys($array);
-
-		// Shuffle the keys.
-		shuffle($keys);
-
-		// Create a $new array using the shuffled keys' order as a blueprint.
-		foreach ($keys as $key)
-		{
-			$new[$key] = $array[$key];
-		}
-
-		// Rebuild $array.
-		$array = $new;
-
-		// Return TRUE no matter what.
-		return TRUE;
-	}
-
-	/**
 	 * Sorts a multi-dimensional array by its children's "luckiness" key. Result is sorted in descending order by
 	 * default.
+	 *
+	 * NOTE: Prior to sorting the array by "luckiness" with usort(), an associative array-friendly shuffle is done on
+	 * $array in order to ensure that, in the event some "luckiness" values are the same, repeated calls on the same
+	 * array do not result in skewed data due to the order of the array elements.
 	 *
 	 * @access private
 	 * @param array  $array Passed by reference.
@@ -358,17 +334,13 @@ class Luk
 	 */
 	private static function sort_by_luckiness(&$array, $sort = 'DESC')
 	{
-		// Shuffle the array before sorting. We do this because in the event that multiple array elements have the
-		// same "luckiness", we don't want the array order to skew their results over time.
-		self::shuffle_assoc($array);
-
 		// Sort by 'luckiness'.
 		uasort($array, function($a, $b) use ($sort)
 		{
 			if ($a['luckiness'] == $b['luckiness'])
 			{
-				// $a and $b have the same luckiness, so don't sort them.
-				return 0;
+				// $a and $b have the same luckiness, so sort them randomly.
+				return rand(-1, 1);
 			}
 			elseif ($a['luckiness'] > $b['luckiness'])
 			{
