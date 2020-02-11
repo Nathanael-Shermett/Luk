@@ -175,8 +175,6 @@ class Luk
 				//   $weight_value equals 1
 				//
 				//   if $rand equals 1 AND $weight_value == 1, then 1 - 1 ==  0 (return key 2)
-				//
-				// </end_verbose_commment>
 				if ($rand <= 0)
 				{
 					// Add this array element to our result.
@@ -213,8 +211,7 @@ class Luk
 	 * 4. Et cetera.
 	 *
 	 * NOTE 1: If the array element already has a weight, it is multiplied by the new calculated weight. This allows
-	 * for
-	 * default weights to still be influenced by LUK whilst maintaining their original weight's integrity.
+	 * for default weights to still be influenced by LUK whilst maintaining their original weight's integrity.
 	 *
 	 * NOTE 2: Weights are multiplied by 1000 to maintain some level of decimal integrity despite "weight" having an
 	 * integer value.
@@ -290,8 +287,6 @@ class Luk
 	/**
 	 * Same as PHP's rand() function, but a LUK level is factored in. Therefore, higher numbers are more likely to
 	 * result than lower numbers.
-	 *
-	 * NOTE: This is inefficient alpha-foxtrot.
 	 *
 	 * @access public
 	 * @param int $luk
